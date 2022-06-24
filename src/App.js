@@ -6,27 +6,32 @@ import Home from '../src/components/home/Home'
 import AddCourse from '../src/components/addCourse/AddCourse'
 import GreenPass from '../src/components/greenpass/GreenPass'
 import Layout from '../src/layout/Layout';
+import {useState} from 'react'
 function App() {
+const [isLogin,setIsLogin]=useState(false)
+
+
+console.log(isLogin)
   return (
     <>
-    <Layout>
+    <Layout isLogin={isLogin}>
     <Switch>
       <Route path='/' exact>
         <Signin/>
       </Route>
       <Route path='/signin'>
-        <Signin/>
+        <Signin setIsLogin={setIsLogin}/>
       </Route>
-      <Route path='/signup' exact>
-        <Signup/>
+      <Route path='/signup' >
+        <Signup setIsLogin={setIsLogin}/>
       </Route>
-      <Route path='/home' exact>
+      <Route path='/home' >
         <Home/>
       </Route>
-      <Route path='/add-course' exact>
+      <Route path='/add-course' >
         <AddCourse/>
       </Route>
-      <Route path='/green-pass' exact>
+      <Route path='/green-pass' >
         <GreenPass/>
       </Route>
     </Switch>
