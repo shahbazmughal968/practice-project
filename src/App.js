@@ -1,5 +1,5 @@
 import './App.css';
-import {Route,Switch} from 'react-router-dom'
+import {Route,Routes} from 'react-router-dom'
 import Signin from '../src/components/signin/Signin'
 import Signup from '../src/components/signup/Signup'
 import Home from '../src/components/home/Home'
@@ -15,26 +15,15 @@ console.log(isLogin)
   return (
     <>
     <Layout isLogin={isLogin}>
-    <Switch>
-      <Route path='/' exact>
-        <Signin/>
-      </Route>
-      <Route path='/signin'>
-        <Signin setIsLogin={setIsLogin}/>
-      </Route>
-      <Route path='/signup' >
-        <Signup setIsLogin={setIsLogin}/>
-      </Route>
-      <Route path='/home' >
-        <Home/>
-      </Route>
-      <Route path='/add-course' >
-        <AddCourse/>
-      </Route>
-      <Route path='/green-pass' >
-        <GreenPass/>
-      </Route>
-    </Switch>
+    <Routes>
+      <Route index element={<Signin/>}/>
+     <Route path='signin' element={ <Signin setIsLogin={setIsLogin}/>}/>  
+     <Route path='signup' element={<Signup setIsLogin={setIsLogin}/>} /> 
+     <Route path='home' element={<Home/>}/>
+     <Route path='add-course' element={<AddCourse/>}/>
+     <Route path='green-pass' element={<GreenPass/>}/>
+       <Route path="*" element={<p>There's nothing here: 404!</p>} />
+    </Routes>
     </Layout>
     </>
   );

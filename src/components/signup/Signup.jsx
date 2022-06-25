@@ -1,8 +1,10 @@
 import classes from "./Signup.module.css";
 import { Card } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useInput from "../../hooks/CustomHook";
+import { useNavigate } from "react-router-dom";
 const Signup = (props) => {
+  const navigate=useNavigate();
   const {
     value: enteredFirstName,
     isValid: enteredFirstNameIsValid,
@@ -44,48 +46,113 @@ const Signup = (props) => {
     reset: resetConfirmPasswordInput,
   } = useInput((value) => value.trim() !== "");
   // useState for signUp value snapshoot start from here
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState("off");
-  // useState for signUp value snapshoot end's here
 
-  const onFormSubmitHandler = async (event) => {
-    event.preventDefault();
-    if (
-      !enteredFirstNameIsValid ||
-      !enteredLastNameIsValid ||
-      !enteredEmailIsValid ||
-      !enteredPasswordIsValid ||
-      !enteredConfirmPasswordIsValid) {
-      alert("Please enter the valid values in all input fields");
-    } 
-    else if(enteredPassword !== enteredConfirmPassword )
+  const [isAdmin, setIsAdmin] = useState("off");
+  const [hideToggle, setHidetoggle] = useState(true);
+  // useState for signUp value snapshoot end's here
+  const hideAdminBtn = async()=>{
+    const response =await fetch('https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json');
+    const data =await response.json();
+    for(const key in data)
     {
-      alert("Please enter the same password")
-    }
-    else {
-      fetch("https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json", {
-        method: "POST",
-        headers: { "Content-Type": "application.json" },
-        body: JSON.stringify({
-          enteredFirstName,
-          enteredLastName,
-          enteredEmail,
-          enteredPassword,
-          isAdmin,
-        }),
-      });
-      resetFirstNameInput("");
-      resetLastNameInput("");
-      resetEmailInput("");
-      resetPasswordInput("");
-      resetConfirmPasswordInput("");
-      props.setIsLogin(true);
+    
+  if(data[key].isAdmin === 'on')
+      {
+  setHidetoggle(false)
+      }
     }
   };
+  useEffect(()=>{
+  hideAdminBtn();
+  });
+  const onFormSubmitHandler = async (event) => {
+    event.preventDefault();
+    const response =await fetch('https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json');
+    const data =await response.json();
+    if(data !== null)
+    {
+      for(const key in data)
+      {
+        if(enteredEmail === data[key].enteredEmail)
+        {
+          alert(enteredEmail +' this email already exist')
+        }
+        else{
+          if (
+            !enteredFirstNameIsValid ||
+            !enteredLastNameIsValid ||
+            !enteredEmailIsValid ||
+            !enteredPasswordIsValid ||
+            !enteredConfirmPasswordIsValid
+          ) {
+            alert("Please enter the valid values in all input fields");
+          } else if (enteredPassword !== enteredConfirmPassword) {
+            alert("Please enter the same password");
+          } else {
+            fetch(
+              "https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application.json" },
+                body: JSON.stringify({
+                  enteredFirstName,
+                  enteredLastName,
+                  enteredEmail,
+                  enteredPassword,
+                  isAdmin,
+                }),
+              }
+            );
+  
+            resetFirstNameInput("");
+            resetLastNameInput("");
+            resetEmailInput("");
+            resetPasswordInput("");
+            resetConfirmPasswordInput("");
+            navigate('../home',{replace:true})
+            props.setIsLogin(true);
+          }
+        }
+      }
+    }
+    else{
+      if (
+        !enteredFirstNameIsValid ||
+        !enteredLastNameIsValid ||
+        !enteredEmailIsValid ||
+        !enteredPasswordIsValid ||
+        !enteredConfirmPasswordIsValid
+      ) {
+        alert("Please enter the valid values in all input fields");
+      } else if (enteredPassword !== enteredConfirmPassword) {
+        alert("Please enter the same password");
+      } else {
+        fetch(
+          "https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application.json" },
+            body: JSON.stringify({
+              enteredFirstName,
+              enteredLastName,
+              enteredEmail,
+              enteredPassword,
+              isAdmin,
+            }),
+          }
+        );
+
+        resetFirstNameInput("");
+        resetLastNameInput("");
+        resetEmailInput("");
+        resetPasswordInput("");
+        resetConfirmPasswordInput("");
+        navigate('../home',{replace:true})
+        props.setIsLogin(true);
+      }
+    }
+       
+      }
   return (
     <>
       <Card className="w-25   m-auto mt-5 border-dark d-flex align-items-center">
@@ -149,20 +216,22 @@ const Signup = (props) => {
             <p className="text-danger">Enter a same Password</p>
           )}
 
-          <div className="form-check form-switch mb-3">
-            <label
-              className="form-check-label fw-bold"
-              htmlFor="flexSwitchCheckDefault"
-            >
-              Is Admin
-            </label>
-            <input
-              className="form-check-input border-dark"
-              type="checkbox"
-              role="switch"
-              onChange={(event) => setIsAdmin(event.target.value)}
-            />
-          </div>
+          {hideToggle && (
+            <div className="form-check form-switch mb-3">
+              <label
+                className="form-check-label fw-bold"
+                htmlFor="flexSwitchCheckDefault"
+              >
+                Is Admin
+              </label>
+              <input
+                className="form-check-input border-dark"
+                type="checkbox"
+                role="switch"
+                onChange={(event) => setIsAdmin(event.target.value)}
+              />
+            </div>
+          )}
           <button className="btn btn-dark " type="submit">
             Sign Up
           </button>
