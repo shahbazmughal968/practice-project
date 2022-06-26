@@ -1,7 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-
+import { useNavigate } from "react-router-dom";
+import classes from './Header.module.css'
 import { Link } from "react-router-dom";
 const Header = (props) => {
+  const navigate=useNavigate();
+  const onLogouthandler = () =>{
+ 
+    navigate('../',{replace:true})
+    props.setGreenPassIcon(false)
+    props.setLogout(false)
+  }
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,6 +31,7 @@ const Header = (props) => {
           >
             <div>
               <ul className="navbar-nav">
+               {props.greenPassIcon && <li className={classes.greenPass}></li>}
                 <li className="nav-item">
                   {props.isLogin && (
                     <Link
@@ -64,7 +73,7 @@ const Header = (props) => {
               <ul className="navbar-nav">
                 <li className="nav-item ">
                   {props.isLogin && (
-                    <a className="nav-link " role="button">
+                    <a className="nav-link " role="button" onClick={onLogouthandler}>
                       Logout
                     </a>
                   )}

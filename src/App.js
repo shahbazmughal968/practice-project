@@ -9,19 +9,21 @@ import Layout from '../src/layout/Layout';
 import {useState} from 'react'
 function App() {
 const [isLogin,setIsLogin]=useState(false)
-
+const [userId,setUserId]=useState('');
+const [greenPassIcon,setGreenPassIcon]=useState(false);
+const [matchData,setMatchData]=useState([]);
 
 console.log(isLogin)
   return (
     <>
-    <Layout isLogin={isLogin}>
+    <Layout isLogin={isLogin} setLogout={setIsLogin} greenPassIcon={greenPassIcon} setGreenPassIcon={setGreenPassIcon} >
     <Routes>
       <Route index element={<Signin/>}/>
-     <Route path='signin' element={ <Signin setIsLogin={setIsLogin}/>}/>  
+     <Route path='signin' element={ <Signin setIsLogin={setIsLogin} setUserId={setUserId}/>}/>  
      <Route path='signup' element={<Signup setIsLogin={setIsLogin}/>} /> 
-     <Route path='home' element={<Home/>}/>
-     <Route path='add-course' element={<AddCourse/>}/>
-     <Route path='green-pass' element={<GreenPass/>}/>
+     <Route path='home' element={<Home userId={userId} setGreenPassIcon={setGreenPassIcon}/>}/>
+     <Route path='add-course' element={<AddCourse userId={userId}/>}/>
+     <Route path='green-pass' element={<GreenPass userId={userId} setGreenPassIcon={setGreenPassIcon}/>}/>
        <Route path="*" element={<p>There's nothing here: 404!</p>} />
     </Routes>
     </Layout>

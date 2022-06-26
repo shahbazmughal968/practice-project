@@ -51,7 +51,10 @@ const Signin = (props) => {
         alert('Admin')
       }
       else{
-        alert('User')
+
+        navigate('../home',{replace:true});
+        props.setUserId(matchUser[0].id)
+        props.setIsLogin(true)
       }
     }
   };

@@ -69,52 +69,25 @@ const Signup = (props) => {
     event.preventDefault();
     const response =await fetch('https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json');
     const data =await response.json();
-    if(data !== null)
-    {
+    let loadedData = [];
+    
+    
+    
       for(const key in data)
       {
-        if(enteredEmail === data[key].enteredEmail)
-        {
-          alert(enteredEmail +' this email already exist')
-        }
-        else{
-          if (
-            !enteredFirstNameIsValid ||
-            !enteredLastNameIsValid ||
-            !enteredEmailIsValid ||
-            !enteredPasswordIsValid ||
-            !enteredConfirmPasswordIsValid
-          ) {
-            alert("Please enter the valid values in all input fields");
-          } else if (enteredPassword !== enteredConfirmPassword) {
-            alert("Please enter the same password");
-          } else {
-            fetch(
-              "https://react-app-7bde4-default-rtdb.firebaseio.com/Users.json",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application.json" },
-                body: JSON.stringify({
-                  enteredFirstName,
-                  enteredLastName,
-                  enteredEmail,
-                  enteredPassword,
-                  isAdmin,
-                }),
-              }
-            );
-  
-            resetFirstNameInput("");
-            resetLastNameInput("");
-            resetEmailInput("");
-            resetPasswordInput("");
-            resetConfirmPasswordInput("");
-            navigate('../home',{replace:true})
-            props.setIsLogin(true);
-          }
-        }
+      loadedData.push({
+        id:key,
+        email:data[key].enteredEmail,
+        password:data[key].enteredPassword,
+        isAdmin:data[key].isAdmin
+      })
       }
-    }
+      const matchUser = loadedData.filter((user)=>user.email === enteredEmail);
+      if(matchUser.length > 0)
+      {
+        alert(enteredEmail+" this email already exist")
+      }
+
     else{
       if (
         !enteredFirstNameIsValid ||
@@ -147,8 +120,7 @@ const Signup = (props) => {
         resetEmailInput("");
         resetPasswordInput("");
         resetConfirmPasswordInput("");
-        navigate('../home',{replace:true})
-        props.setIsLogin(true);
+        navigate('../signin',{replace:true})
       }
     }
        
